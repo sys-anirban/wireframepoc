@@ -1,9 +1,7 @@
-const errorType = {
-  VALIDATION_ERROR: 'validation-error',
+const ERROR_DESCRIPTION = {
+  VALIDATION_ERROR: 'Input validation failed',
+  USER_NOT_FOUND: 'Could not find the user',
+  INVALID_CREDENTIALS: 'Invalid credentials',
 };
 
-const errors = {
-  [errorType.VALIDATION_ERROR]: 'Input validation failed',
-};
-
-module.exports = errors;
+module.exports = ERROR_DESCRIPTION;

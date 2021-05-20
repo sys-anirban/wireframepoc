@@ -1,32 +1,29 @@
 const { validationResult } = require('express-validator');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const { ProblemError } = require('../middleware/error');
+const errorDescription = require('../constants/errors');
 
 const login = (req, res, next) => {
   const { username, password } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error('Validation failed.');
-    error.statusCode = 422;
-    error.data = errors.array();
-    throw error;
+    ProblemError(errorDescription.VALIDATION_ERROR, 422, { isInvalid: true });
   }
   User.findOne({ username: username })
     .then((user) => {
       if (!user) {
-        const error = new Error('A user with this email could not be found.');
-        error.statusCode = 401;
-        throw error;
+        ProblemError(errorDescription.USER_NOT_FOUND, 401, { isInvalid: true });
       } else if (user.password !== password) {
-        const error = new Error('Invalid credentials');
-        error.statusCode = 401;
-        throw error;
+        ProblemError(errorDescription.INVALID_CREDENTIALS, 401, {
+          isInvalid: true,
+        });
       }
       const token = jwt.sign(
         {
           username: user.username,
         },
-        'somesupersecretsecret',
+        'token',
         { expiresIn: '1h' }
       );
       res.status(200).json({ token, isUserAuthenticated: true });

@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { errorMiddleware } = require('./error');
 
 const userRouter = require('../route/user');
 
@@ -26,11 +27,12 @@ app.use((req, res, next) => {
   next(error);
 });
 
-app.use((error, req, res, next) => {
-  const status = error.statusCode || 500;
-  const message = error.message;
-  const data = error.data;
-  res.status(status).json({ message: message, data: data });
-});
+app.use(errorMiddleware);
+// app.use((error, req, res, next) => {
+//   const status = error.statusCode || 500;
+//   const message = error.message;
+//   const data = error.data;
+//   res.status(status).json({ message: message, data: data });
+// });
 
 module.exports = app;
