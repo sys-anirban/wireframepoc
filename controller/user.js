@@ -1,5 +1,5 @@
 const { validationResult } = require('express-validator');
-const User = require('../models/User');
+const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const { ProblemError } = require('../middleware/error');
 const errorDescription = require('../constants/errors');
@@ -11,7 +11,7 @@ const login = async (req, res, next) => {
     if (!errors.isEmpty()) {
       ProblemError(errorDescription.VALIDATION_ERROR, 422, { isInvalid: true });
     }
-    const user = await User.findOne({ username: username });
+    const user = await User.findOne({ username });
     if (!user) {
       ProblemError(errorDescription.USER_NOT_FOUND, 401, { isInvalid: true });
     } else if (user.password !== password) {
