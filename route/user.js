@@ -1,7 +1,6 @@
 const { Router } = require('express');
 const { body } = require('express-validator');
-const { login } = require('../controller/user');
-const { userdetails } = require('../controller/userdetails');
+const { login, userdetails, officialdetails } = require('../controller/user');
 const router = Router();
 
 router.post(
@@ -16,5 +15,6 @@ router.post(
   login
 );
 router.get('/userdetails', userdetails);
+router.get('/officialdetails', officialdetails);
 
 module.exports = router;
