@@ -77,7 +77,7 @@ const updateskillset = async (req, res, next) => {
         : { sskill: updatedSkills };
 
     const officialdetail = await OfficialdetailsSchema.findOneAndUpdate(
-      { emailid: 'adminex@admin.com' },
+      { emailid },
       { ...queryString },
       { new: true }
     );
