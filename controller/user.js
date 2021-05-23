@@ -1,7 +1,13 @@
 const { validationResult } = require('express-validator');
+/**
+ * import Models
+ */
 const User = require('../models/user');
 const UserdetailsSchema = require('../models/userdetails');
 const OfficialdetailsSchema = require('../models/officialdetails');
+const TeamMembersSchema = require('../models/teams');
+const DescriptionSchema = require('../models/description');
+
 const jwt = require('jsonwebtoken');
 const { ProblemError } = require('../middleware/error');
 const errorDescription = require('../constants/errors');
@@ -37,7 +43,7 @@ const login = async (req, res, next) => {
 };
 const userdetails = async (req, res, next) => {
   try {
-    const { emailid } = req.query;
+    const { emailid } = req.headers;
     const userdetail = await UserdetailsSchema.findOne({
       emailid,
     });
@@ -52,7 +58,7 @@ const userdetails = async (req, res, next) => {
 
 const officialdetails = async (req, res, next) => {
   try {
-    const { emailid } = req.query;
+    const { emailid } = req.headers;
     const officialdetail = await OfficialdetailsSchema.findOne({
       emailid,
     });
@@ -67,8 +73,7 @@ const officialdetails = async (req, res, next) => {
 
 const updateskillset = async (req, res, next) => {
   try {
-    const { emailid } = req.query;
-
+    const { emailid } = req.headers;
     const { skilltype, updatedSkills } = req.body;
 
     const queryString =
@@ -90,4 +95,37 @@ const updateskillset = async (req, res, next) => {
   }
 };
 
-module.exports = { login, userdetails, officialdetails, updateskillset };
+const teammembers = async (req, res, next) => {
+  try {
+    const { emailid } = req.headers;
+    const teamdetails = await TeamMembersSchema.findOne({ emailid });
+    if (!teamdetails) {
+      ProblemError(errorDescription.FETCH_FAILED, 422);
+    }
+    res.status(200).json({ teamdetails });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const descriptionDetails = async (req, res, next) => {
+  try {
+    const { emailid } = req.headers;
+    const descriptions = await DescriptionSchema.findOne({ emailid });
+    if (!descriptions) {
+      ProblemError(errorDescription.FETCH_FAILED, 422);
+    }
+    res.status(200).json({ descriptions });
+  } catch (errors) {
+    next(errors);
+  }
+};
+
+module.exports = {
+  login,
+  userdetails,
+  officialdetails,
+  updateskillset,
+  teammembers,
+  descriptionDetails,
+};

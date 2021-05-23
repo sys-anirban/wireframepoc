@@ -5,6 +5,8 @@ const {
   userdetails,
   officialdetails,
   updateskillset,
+  teammembers,
+  descriptionDetails,
 } = require('../controller/user');
 const router = Router();
 
@@ -22,5 +24,7 @@ router.post(
 router.get('/userdetails', userdetails);
 router.get('/officialdetails', officialdetails);
 router.patch('/updateskill', updateskillset);
+router.get('/team', teammembers);
+router.get('/descriptions', descriptionDetails);
 
 module.exports = router;
