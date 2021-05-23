@@ -37,7 +37,7 @@ const login = async (req, res, next) => {
 };
 const userdetails = async (req, res, next) => {
   try {
-    const { emailid } = req.headers;
+    const { emailid } = req.query;
     const userdetail = await UserdetailsSchema.findOne({
       emailid,
     });
@@ -52,7 +52,7 @@ const userdetails = async (req, res, next) => {
 
 const officialdetails = async (req, res, next) => {
   try {
-    const { emailid } = req.headers;
+    const { emailid } = req.query;
     const officialdetail = await OfficialdetailsSchema.findOne({
       emailid,
     });
