@@ -57,7 +57,7 @@ const officialdetails = async (req, res, next) => {
       emailid,
     });
     if (!officialdetail) {
-      return res.status(200).json({ message: 'no user found with this email' });
+      ProblemError(errorDescription.OFFICIAL_DETAILS_FETCH_FAIL, 422);
     }
     res.status(200).json({ officialdetail });
   } catch (error) {
@@ -65,4 +65,24 @@ const officialdetails = async (req, res, next) => {
   }
 };
 
-module.exports = { login, userdetails, officialdetails };
+const updateskillset = async (req, res, next) => {
+  const { emailid } = req.query;
+  const { skilltype, updatedSkills } = req.body;
+  let queryString =
+    skilltype === 'pskill'
+      ? { pskill: updatedSkills }
+      : { sskill: updatedSkills };
+
+  const officialdetail = await OfficialdetailsSchema.findOneAndUpdate(
+    { emailid: 'adminex@admin.com1' },
+    { ...queryString },
+    { new: true }
+  );
+  if (!officialdetail) {
+    console.log('officialdetail', officialdetail);
+    ProblemError(errorDescription.UPDATE_FAILED, 422);
+  }
+  res.status(200).json({ officialdetail });
+};
+
+module.exports = { login, userdetails, officialdetails, updateskillset };

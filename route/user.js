@@ -1,6 +1,11 @@
 const { Router } = require('express');
 const { body } = require('express-validator');
-const { login, userdetails, officialdetails } = require('../controller/user');
+const {
+  login,
+  userdetails,
+  officialdetails,
+  updateskillset,
+} = require('../controller/user');
 const router = Router();
 
 router.post(
@@ -16,5 +21,6 @@ router.post(
 );
 router.get('/userdetails', userdetails);
 router.get('/officialdetails', officialdetails);
+router.patch('/updateskill', updateskillset);
 
 module.exports = router;
