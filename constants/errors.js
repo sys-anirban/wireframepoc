@@ -3,7 +3,7 @@ const ERROR_DESCRIPTION = {
   USER_NOT_FOUND: 'Could not find the user',
   INVALID_CREDENTIALS: 'Invalid credentials',
   UPDATE_FAILED: 'Could not update',
-  OFFICIAL_DETAILS_FETCH_FAIL: 'Could not fetch official details',
+  FETCH_FAILED: 'Could not fetch details',
 };
 
 module.exports = ERROR_DESCRIPTION;
