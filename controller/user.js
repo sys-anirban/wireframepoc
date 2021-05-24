@@ -6,7 +6,6 @@ const User = require('../models/user');
 const UserdetailsSchema = require('../models/userdetails');
 const OfficialdetailsSchema = require('../models/officialdetails');
 const TeamMembersSchema = require('../models/teams');
-const DescriptionSchema = require('../models/description');
 
 const jwt = require('jsonwebtoken');
 const { ProblemError } = require('../middleware/error');
@@ -108,24 +107,10 @@ const teammembers = async (req, res, next) => {
   }
 };
 
-const descriptionDetails = async (req, res, next) => {
-  try {
-    const { emailid } = req.headers;
-    const descriptions = await DescriptionSchema.findOne({ emailid });
-    if (!descriptions) {
-      ProblemError(errorDescription.FETCH_FAILED, 422);
-    }
-    res.status(200).json({ descriptions });
-  } catch (errors) {
-    next(errors);
-  }
-};
-
 module.exports = {
   login,
   userdetails,
   officialdetails,
   updateskillset,
   teammembers,
-  descriptionDetails,
 };

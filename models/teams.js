@@ -7,7 +7,7 @@ const teamMembersSchema = new Schema({
     required: true,
   },
   teammembers: {
-    type: Array,
+    type: [Object],
     required: true,
   },
 });
