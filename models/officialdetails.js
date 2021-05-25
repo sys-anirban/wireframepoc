@@ -20,11 +20,9 @@ const officialdetailsSchema = new Schema({
   },
   pskill: {
     type: String,
-    required: true,
   },
   sskill: {
     type: String,
-    required: true,
   },
 });
 module.exports = mongoose.model('officialdetails', officialdetailsSchema);

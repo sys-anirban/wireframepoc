@@ -11,7 +11,6 @@ const jwt = require('jsonwebtoken');
 const { ProblemError } = require('../middleware/error');
 const errorDescription = require('../constants/errors');
 const bcrypt = require('bcryptjs');
-const { use } = require('../route/user');
 
 const login = async (req, res, next) => {
   try {
@@ -21,9 +20,12 @@ const login = async (req, res, next) => {
       ProblemError(errorDescription.VALIDATION_ERROR, 422, { isInvalid: true });
     }
     const user = await User.findOne({ emailid });
+    console.log('user', user);
+    const decodedPassword = await bcrypt.compare(password, user.password);
+    console.log('ur', decodedPassword);
     if (!user) {
       ProblemError(errorDescription.USER_NOT_FOUND, 401, { isInvalid: true });
-    } else if (user.password !== password) {
+    } else if (!decodedPassword) {
       ProblemError(errorDescription.INVALID_CREDENTIALS, 401, {
         isInvalid: true,
       });
@@ -132,6 +134,33 @@ const signUpUser = async (req, res, next) => {
       ProblemError(errorDescription.VALIDATION_ERROR, 422);
     }
     const encryptedPassword = await bcrypt.hash(password, 12);
+    const user = new User({
+      emailid,
+      password: encryptedPassword,
+    });
+    await user.save();
+    const userdetail = new UserdetailsSchema({
+      emailid,
+      fname,
+      lname,
+      houseno,
+      landmark,
+      city,
+      poffice,
+      state,
+      pin,
+      mname,
+      image: 'https://i.imgur.com/1o1zEDM.png',
+    });
+    await userdetail.save();
+    const officialdetail = new OfficialdetailsSchema({
+      emailid,
+      empcode,
+      manager,
+      memail,
+    });
+    await officialdetail.save();
+    res.status(201).json({ maeesage: 'Registration Successful' });
   } catch (err) {
     next(err);
   }
