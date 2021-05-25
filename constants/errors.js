@@ -4,6 +4,7 @@ const ERROR_DESCRIPTION = {
   INVALID_CREDENTIALS: 'Invalid credentials',
   UPDATE_FAILED: 'Could not update',
   FETCH_FAILED: 'Could not fetch details',
+  INTERNAL_SERVER_ERROR: 'Internal Server Error',
 };
 
 module.exports = ERROR_DESCRIPTION;

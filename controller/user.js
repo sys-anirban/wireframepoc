@@ -10,6 +10,8 @@ const TeamMembersSchema = require('../models/teams');
 const jwt = require('jsonwebtoken');
 const { ProblemError } = require('../middleware/error');
 const errorDescription = require('../constants/errors');
+const bcrypt = require('bcryptjs');
+const { use } = require('../route/user');
 
 const login = async (req, res, next) => {
   try {
@@ -107,10 +109,89 @@ const teammembers = async (req, res, next) => {
   }
 };
 
+const signUpUser = (req, res, next) => {
+  const {
+    fname,
+    mname,
+    lname,
+    emailid,
+    password,
+    houseno,
+    landmark,
+    poffice,
+    city,
+    state,
+    pin,
+    empcode,
+    manager,
+    memail,
+  } = req.body.body;
+  console.log('password', password);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    ProblemError(errorDescription.VALIDATION_ERROR, 422);
+  }
+
+  bcrypt
+    .hash(password, 12)
+    .then((hashPassword) => {
+      const user = new User({
+        emailid,
+        password: hashPassword,
+      });
+      const userdetail = new UserdetailsSchema({
+        emailid,
+        fname,
+        lname,
+        houseno,
+        landmark,
+        city,
+        poffice,
+        state,
+        pin,
+        mname,
+        image,
+      });
+      const officialdetail = new OfficialdetailsSchema({
+        emailid,
+        empcode,
+        manager,
+        memail,
+        pskill,
+        sskill,
+      });
+      user
+        .save()
+        .then(() => {
+          userdetail
+            .save()
+            .then(() => {
+              officialdetail
+                .save()
+                .then(() => {
+                  res.status(201).json({ message: 'Registration Successful' });
+                })
+                .catch(() => {
+                  user.deleteOne({ emailid });
+                  userdetail.deleteOne({ emailid });
+                  ProblemError(errorDescription.INTERNAL_SERVER_ERROR, 500);
+                });
+            })
+            .catch(() => {
+              user.deleteOne({ emailid });
+              ProblemError(errorDescription.INTERNAL_SERVER_ERROR, 500);
+            });
+        })
+        .catch(() => ProblemError(errorDescription.INTERNAL_SERVER_ERROR, 500));
+    })
+    .catch(() => ProblemError(errorDescription.INTERNAL_SERVER_ERROR, 500));
+};
+
 module.exports = {
   login,
   userdetails,
   officialdetails,
   updateskillset,
   teammembers,
+  signUpUser,
 };
