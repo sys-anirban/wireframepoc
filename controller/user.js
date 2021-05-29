@@ -6,11 +6,32 @@ const User = require('../models/user');
 const UserdetailsSchema = require('../models/userdetails');
 const OfficialdetailsSchema = require('../models/officialdetails');
 const TeamMembersSchema = require('../models/teams');
+const VerifyOTPSchema = require('../models/verifyOTP');
 
 const jwt = require('jsonwebtoken');
 const { ProblemError } = require('../middleware/error');
 const errorDescription = require('../constants/errors');
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'examsuru.development@gmail.com',
+    pass: 'ExamSuru2020#',
+  },
+});
+
+const OTP = Math.floor(100000 + Math.random() * 900000);
+
+const MailOptions = (receiverMailId) => {
+  return {
+    from: 'examsuru.development@gmail.com',
+    to: receiverMailId,
+    subject: 'Login OTP',
+    html: `<p>Hello your OTP is ${OTP}</p>`,
+  };
+};
 
 const login = async (req, res, next) => {
   try {
@@ -128,6 +149,7 @@ const signUpUser = async (req, res, next) => {
       memail,
     } = req.body.body;
     const errors = validationResult(req);
+
     if (!errors.isEmpty()) {
       ProblemError(errorDescription.VALIDATION_ERROR, 422);
     }
@@ -158,7 +180,31 @@ const signUpUser = async (req, res, next) => {
       memail,
     });
     await officialdetail.save();
+
+    const otpDetails = new VerifyOTPSchema({ emailid, otp: OTP });
+    await otpDetails.save();
+    await transporter.sendMail(MailOptions(emailid));
+
     res.status(201).json({ maeesage: 'Registration Successful' });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const verifyOTP = async (req, res, next) => {
+  try {
+    const { emailid, otp } = req.headers;
+    if (!emailid) {
+      ProblemError(errorDescription.INVALID_HEADER, 422);
+    }
+    const savedData = await VerifyOTPSchema.findOne({
+      emailid,
+    });
+
+    if (savedData.otp !== parseInt(otp)) {
+      return res.status(200).json({ verifiedOTP: false });
+    }
+    res.status(200).json({ verifiedOTP: true });
   } catch (err) {
     next(err);
   }
@@ -171,4 +217,5 @@ module.exports = {
   updateskillset,
   teammembers,
   signUpUser,
+  verifyOTP,
 };

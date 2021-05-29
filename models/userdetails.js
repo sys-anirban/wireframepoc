@@ -4,46 +4,46 @@ const Schema = mongoose.Schema;
 const userdetailsSchema = new Schema({
   emailid: {
     type: String,
-    required: true,
+    //   required: true,
   },
   fname: {
     type: String,
-    required: true,
+    //  required: true,
   },
   mname: {
     type: String,
   },
   lname: {
     type: String,
-    required: true,
+    //  required: true,
   },
   houseno: {
     type: String,
-    required: true,
+    //  required: true,
   },
   landmark: {
     type: String,
-    required: true,
+    //  required: true,
   },
   city: {
     type: String,
-    required: true,
+    //  required: true,
   },
   poffice: {
     type: String,
-    required: true,
+    //  required: true,
   },
   state: {
     type: String,
-    required: true,
+    //   required: true,
   },
   pin: {
     type: Number,
-    required: true,
+    //  required: true,
   },
   image: {
     type: String,
-    required: true,
+    //  required: true,
   },
 });
 module.exports = mongoose.model('userdetails', userdetailsSchema);

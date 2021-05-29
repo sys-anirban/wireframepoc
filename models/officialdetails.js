@@ -4,19 +4,19 @@ const Schema = mongoose.Schema;
 const officialdetailsSchema = new Schema({
   emailid: {
     type: String,
-    required: true,
+    //   required: true,
   },
   empcode: {
     type: String,
-    required: true,
+    //   required: true,
   },
   manager: {
     type: String,
-    required: true,
+    //   required: true,
   },
   memail: {
     type: String,
-    required: true,
+    //   required: true,
   },
   pskill: {
     type: String,

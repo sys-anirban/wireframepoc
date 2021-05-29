@@ -7,6 +7,7 @@ const {
   updateskillset,
   teammembers,
   signUpUser,
+  verifyOTP,
 } = require('../controller/user');
 const router = Router();
 
@@ -26,5 +27,6 @@ router.get('/officialdetails', officialdetails);
 router.patch('/updateskill', updateskillset);
 router.get('/team', teammembers);
 router.post('/signup', signUpUser);
+router.get('/verifyotp', verifyOTP);
 
 module.exports = router;

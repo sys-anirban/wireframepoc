@@ -5,6 +5,7 @@ const ERROR_DESCRIPTION = {
   UPDATE_FAILED: 'Could not update',
   FETCH_FAILED: 'Could not fetch details',
   INTERNAL_SERVER_ERROR: 'Internal Server Error',
+  INVALID_HEADER: 'INVALID_HEADER',
 };
 
 module.exports = ERROR_DESCRIPTION;
