@@ -12,7 +12,6 @@ const userdetailsSchema = new Schema({
   },
   mname: {
     type: String,
-    required: true,
   },
   lname: {
     type: String,
@@ -40,6 +39,10 @@ const userdetailsSchema = new Schema({
   },
   pin: {
     type: Number,
+    required: true,
+  },
+  image: {
+    type: String,
     required: true,
   },
 });

@@ -20,9 +20,8 @@ const login = async (req, res, next) => {
       ProblemError(errorDescription.VALIDATION_ERROR, 422, { isInvalid: true });
     }
     const user = await User.findOne({ emailid });
-    console.log('user', user);
     const decodedPassword = await bcrypt.compare(password, user.password);
-    console.log('ur', decodedPassword);
+
     if (!user) {
       ProblemError(errorDescription.USER_NOT_FOUND, 401, { isInvalid: true });
     } else if (!decodedPassword) {
@@ -100,8 +99,7 @@ const updateskillset = async (req, res, next) => {
 
 const teammembers = async (req, res, next) => {
   try {
-    const { emailid } = req.headers;
-    const teamdetails = await TeamMembersSchema.findOne({ emailid });
+    const teamdetails = await TeamMembersSchema.findOne();
     if (!teamdetails) {
       ProblemError(errorDescription.FETCH_FAILED, 422);
     }
