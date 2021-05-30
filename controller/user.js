@@ -12,26 +12,7 @@ const jwt = require('jsonwebtoken');
 const { ProblemError } = require('../middleware/error');
 const errorDescription = require('../constants/errors');
 const bcrypt = require('bcryptjs');
-const nodemailer = require('nodemailer');
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'examsuru.development@gmail.com',
-    pass: 'ExamSuru2020#',
-  },
-});
-
-const OTP = Math.floor(100000 + Math.random() * 900000);
-
-const MailOptions = (receiverMailId) => {
-  return {
-    from: 'examsuru.development@gmail.com',
-    to: receiverMailId,
-    subject: 'Login OTP',
-    html: `<p>Hello your OTP is ${OTP}</p>`,
-  };
-};
+const { MailOptions, mailTransporter } = require('../util/util');
 
 const login = async (req, res, next) => {
   try {
@@ -150,15 +131,23 @@ const signUpUser = async (req, res, next) => {
     } = req.body.body;
     const errors = validationResult(req);
 
+    const senderMailid = process.env.MAIL_ID;
+    const mailPassword = process.env.MAIL_PASSWORD;
+
     if (!errors.isEmpty()) {
       ProblemError(errorDescription.VALIDATION_ERROR, 422);
     }
+    const OTP = Math.floor(100000 + Math.random() * 900000);
+
     const encryptedPassword = await bcrypt.hash(password, 12);
+
     const user = new User({
       emailid,
       password: encryptedPassword,
     });
+
     await user.save();
+
     const userdetail = new UserdetailsSchema({
       emailid,
       fname,
@@ -172,18 +161,23 @@ const signUpUser = async (req, res, next) => {
       mname,
       image: 'https://i.imgur.com/1o1zEDM.png',
     });
+
     await userdetail.save();
+
     const officialdetail = new OfficialdetailsSchema({
       emailid,
       empcode,
       manager,
       memail,
     });
+
     await officialdetail.save();
 
     const otpDetails = new VerifyOTPSchema({ emailid, otp: OTP });
     await otpDetails.save();
-    await transporter.sendMail(MailOptions(emailid));
+    await mailTransporter(senderMailid, mailPassword).sendMail(
+      MailOptions(emailid, senderMailid, OTP)
+    );
 
     res.status(201).json({ maeesage: 'Registration Successful' });
   } catch (err) {
