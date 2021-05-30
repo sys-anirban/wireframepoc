@@ -6,6 +6,9 @@ const ERROR_DESCRIPTION = {
   FETCH_FAILED: 'Could not fetch details',
   INTERNAL_SERVER_ERROR: 'Internal Server Error',
   INVALID_HEADER: 'INVALID_HEADER',
+  NO_AUTH_HEADER: 'No authorized Header',
+  FAILED_DECODE_TOKEN: 'Could not decode token',
+  UNAUTHORISED_ACCESS: 'Unauthorized access',
 };
 
 module.exports = ERROR_DESCRIPTION;

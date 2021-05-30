@@ -9,6 +9,9 @@ const {
   signUpUser,
   verifyOTP,
 } = require('../controller/user');
+
+const isAuth = require('../middleware/isAuth');
+
 const router = Router();
 
 router.post(
@@ -22,10 +25,10 @@ router.post(
   ],
   login
 );
-router.get('/userdetails', userdetails);
-router.get('/officialdetails', officialdetails);
+router.get('/userdetails', isAuth, userdetails);
+router.get('/officialdetails', isAuth, officialdetails);
 router.patch('/updateskill', updateskillset);
-router.get('/team', teammembers);
+router.get('/team', isAuth, teammembers);
 router.post('/signup', signUpUser);
 router.get('/verifyotp', verifyOTP);
 
