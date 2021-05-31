@@ -137,6 +137,13 @@ const signUpUser = async (req, res, next) => {
     if (!errors.isEmpty()) {
       ProblemError(errorDescription.VALIDATION_ERROR, 422);
     }
+
+    const isAlreadyRegistered = await User.findOne({ emailid });
+
+    if (isAlreadyRegistered) {
+      return res.status(200).json({ alreadyRegistered: true });
+    }
+
     const OTP = Math.floor(100000 + Math.random() * 900000);
 
     const encryptedPassword = await bcrypt.hash(password, 12);
@@ -191,11 +198,12 @@ const verifyOTP = async (req, res, next) => {
     if (!emailid) {
       ProblemError(errorDescription.INVALID_HEADER, 422);
     }
-    const savedData = await VerifyOTPSchema.findOne({
+    const savedData = await VerifyOTPSchema.find({
       emailid,
     });
+    const latestOTP = savedData[savedData.length - 1];
 
-    if (savedData.otp !== parseInt(otp)) {
+    if (latestOTP.otp !== parseInt(otp)) {
       return res.status(200).json({ verifiedOTP: false });
     }
     res.status(200).json({ verifiedOTP: true });
